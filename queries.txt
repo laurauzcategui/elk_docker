@@ -1,0 +1,57 @@
+# check the health
+curl -u elastic http://127.0.0.1:9200/_cat/health
+
+# check the nodes
+curl -u elastic http://127.0.0.1:9200/_cat/nodes?v
+
+# check the indices
+curl -u elastic http://127.0.0.1:9200/_cat/indices?v
+
+curl -u elastic -XGET 'http://127.0.0.1:9200/_count?pretty' -d '{
+ "query": {
+ "match_all": {}
+ }
+}
+'
+
+# creating indices
+curl -u elastic -XPUT 'localhost:9200/corp?pretty&pretty'
+
+# query indices
+curl -u elastic -XGET 'localhost:9200/_cat/indices?v&pretty'
+
+# create a document
+curl -u elastic -XPUT 'localhost:9200/corp/employee/1?pretty&pretty' -H 'Content-Type: application/json' -d'
+{
+  "first_name" : "John",
+  "last_name" : "Smith",
+  "age" : 25,
+  "about" :"I love to go rock climbing",
+  "interests": [ "sports", "music" ]
+}
+'
+
+curl -u elastic -XPUT 'localhost:9200/corp/employee/2?pretty&pretty' -H 'Content-Type: application/json' -d'
+{
+  "first_name" : "Laura",
+  "last_name" : "Uzcategui",
+  "age" : 32,
+  "about" :"I love to travel",
+  "interests": [ "books", "tech" ]
+}
+'
+
+# retrieve the doc
+curl -u elastic -XGET 'localhost:9200/corp/employee/1?pretty&pretty'
+
+# creating indexes with particular config
+curl -XPUT 'localhost:9200/twitter?pretty' -H 'Content-Type: application/json' -d'
+{
+    "settings" : {
+        "index" : {
+            "number_of_shards" : 3,
+            "number_of_replicas" : 2
+        }
+    }
+}
+'
